@@ -1,0 +1,6 @@
+Put the following files from the EDK here:
+
+edk.lib
+edk_utils.lib
+
+Be sure to add these to your linker.

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="blocks">
+      <UniqueIdentifier>{66ab0c97-07dc-487b-9852-9a1ba1f04758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{2a49a283-bfd2-45fe-90d9-00aedc190b62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blocks\Cinder-Emotiv">
+      <UniqueIdentifier>{f2f7243d-7031-4b3c-a5a8-d03c0dbbc1de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blocks\Cinder-KissFft">
+      <UniqueIdentifier>{c40fffad-99a6-4f52-aa3f-cc7d8af09ded}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\BrainwaveApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\Emotiv.h">
+      <Filter>blocks\Cinder-Emotiv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-KissFft\src\KissFFT.h">
+      <Filter>blocks\Cinder-KissFft</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

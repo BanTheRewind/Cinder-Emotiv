@@ -1,0 +1,5 @@
+Put the following files from the EDK here:
+
+edk.h
+edkErrorCode.h
+EmoStateDLL.h

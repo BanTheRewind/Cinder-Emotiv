@@ -1,0 +1,23 @@
+This is a Cinder wrapper for the Emotiv SDK. The Emotiv 
+SDK is not free, therefore I cannot distribute any part of
+it with this code. This block requires the KissFFT block
+version 1.0.0 or better.
+
+To learn more about the Emotiv EPOC and 
+this block, check out the following URLs:
+
+http://www.emotiv.com/
+http://bantherewind.com/cinder-emotiv
+http://bantherewind.com/cinder-kissfft
+http://bantherewind.com/seccog
+
+-----------------------------------------
+
+Version 1.0.2
+
+-----------------------------------------
+
+http://www.bantherewind.com
+http://www.libcinder.org
+
+bantherewind@gmail.com
