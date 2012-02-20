@@ -1,7 +1,9 @@
 This is a Cinder wrapper for the Emotiv SDK. The Emotiv 
-SDK is not free, therefore I cannot distribute any part of
-it with this code. This block requires the KissFFT block
-version 1.0.0 or better.
+SDK (EDK) is not free, therefore I cannot distribute any 
+part of it with this code. This block requires the KissFFT 
+block version 1.0.0 or better. Open the README files 
+throughoutthe repository to learn where to place files 
+from the EDK.
 
 To learn more about the Emotiv EPOC and 
 this block, check out the following URLs:
