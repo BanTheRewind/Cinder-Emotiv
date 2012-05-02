@@ -110,7 +110,7 @@ Emotiv::~Emotiv()
 }
 
 // Add callback
-int32_t Emotiv::addCallback( const boost::function<void ( EmotivEvent event )> & callback )
+int32_t Emotiv::addCallback( const boost::function<void ( EmotivEvent event )> &callback )
 {
 
 	// Determine return ID
@@ -125,7 +125,7 @@ int32_t Emotiv::addCallback( const boost::function<void ( EmotivEvent event )> &
 }
 
 // Connect to Emotiv Engine
-bool Emotiv::connect( const string & deviceId, const string & remoteAddress, uint16_t port )
+bool Emotiv::connect( const string &deviceId, const string &remoteAddress, uint16_t port )
 {
 
 	try {
@@ -159,7 +159,7 @@ bool Emotiv::connect( const string & deviceId, const string & remoteAddress, uin
 
 	// Start thread
 	mRunning = true;
-	mThread = boost::thread( & Emotiv::update, this );
+	mThread = std::shared_ptr<boost::thread>( new boost::thread( bind( &Emotiv::update, this ) ) );
 
 	// Return connected flag
 	return mConnected;
@@ -173,7 +173,7 @@ bool Emotiv::disconnect()
 	// Stop thread
 	if ( mRunning ) {
 		mRunning = false;
-		mThread.join();
+		mThread->join();
 	}
 
 	// Disconnect and free resources
@@ -198,13 +198,13 @@ int32_t Emotiv::getNumUsers()
 
 	// Retrieve and return number of connected headsets
 	uint32_t users = 0;
-	EE_EngineGetNumUser( & users );
+	EE_EngineGetNumUser( &users );
 	return users;
 
 }
 
 // Load profile onto device
-bool Emotiv::loadProfile( const string & profilePath, uint32_t userId )
+bool Emotiv::loadProfile( const fs::path &profilePath, uint32_t userId )
 {
 
 	// Bail if not connected
@@ -214,7 +214,7 @@ bool Emotiv::loadProfile( const string & profilePath, uint32_t userId )
 
 	// Load profile
 	try {
-		if ( EE_LoadUserProfile( userId, profilePath.c_str() ) != EDK_OK ) {
+		if ( EE_LoadUserProfile( userId, profilePath.generic_string().c_str() ) != EDK_OK ) {
 			return false;
 		}
 		return true;
@@ -225,18 +225,18 @@ bool Emotiv::loadProfile( const string & profilePath, uint32_t userId )
 }
 
 // List profiles
-map<string, string> Emotiv::listProfiles( const string & dataPath )
+map<fs::path, string> Emotiv::listProfiles( const fs::path &dataPath )
 {
 
 	// Create return object
-	map<string, string> profiles;
+	map<fs::path, string> profiles;
 	
 	// Iterate through all files in directory, adding all "EMU" files
-	string dataDirectory = dataPath.length() > 0 ? dataPath : getAppPath() + "data";
+	fs::path dataDirectory = dataPath.string().length() > 0 ? dataPath : getAppPath() / fs::path( "data" );
 	if ( fs::exists( dataDirectory ) ) {
 		for ( fs::directory_iterator fileIt( dataDirectory ), mEnd; fileIt != mEnd; ++fileIt ) {
-			if ( boost::to_lower_copy( fileIt->filename().substr( fileIt->filename().find_last_of( "." ) ) ) == ".emu" ) {
-				profiles.insert( make_pair( fileIt->filename().substr( 0, fileIt->filename().find_last_of( "." ) ), fileIt->path().string() ) );
+			if ( boost::iequals( fileIt->path().extension().string(), ".emu" ) ) {
+				profiles.insert( make_pair( fileIt->path().filename().stem(), fileIt->path().string() ) );
 			}
 		}
 	}
@@ -288,7 +288,7 @@ void Emotiv::update()
 
 				// Get user ID
 				uint32_t userId;
-				if ( EE_EmoEngineEventGetUserId( mEvent, & userId ) == EDK_OK ) {
+				if ( EE_EmoEngineEventGetUserId( mEvent, &userId ) == EDK_OK ) {
 
 					// Get event type
 					EE_Event_t eventType = EE_EmoEngineEventGetType( mEvent );
@@ -330,7 +330,7 @@ void Emotiv::update()
 								// Get raw EEG data
 								EE_DataUpdateHandle( userId, mData );
 								uint32_t samplesTaken = 0;
-								EE_DataGetNumberOfSample( mData, & samplesTaken );
+								EE_DataGetNumberOfSample( mData, &samplesTaken );
 								if ( samplesTaken != 0 ) {
 
 									// Create buffers for raw and target data

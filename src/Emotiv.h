@@ -218,7 +218,7 @@ public:
 	~Emotiv();
 
 	// Dis/connect
-	bool				connect( const std::string & deviceId = "Emotiv Systems-5", const std::string & remoteAddress = "", uint16_t port = 0 );
+	bool				connect( const std::string &deviceId = "Emotiv Systems-5", const std::string &remoteAddress = "", uint16_t port = 0 );
 	bool				connected() { return mConnected; }
 	bool				disconnect();
 	int32_t				getNumUsers();
@@ -228,8 +228,8 @@ public:
 	bool				fftEnabled() { return mFftEnabled; }
 
 	// Profiles
-	static std::map<std::string, std::string>	listProfiles( const std::string & dataPath = "" );
-	bool										loadProfile( const std::string & profilePath, uint32_t userId = 0x00 );
+	static std::map<ci::fs::path, std::string>	listProfiles( const ci::fs::path &dataPath = "" );
+	bool										loadProfile( const ci::fs::path &profilePath, uint32_t userId = 0x00 );
 
 	// Callbacks
 	int32_t				addCallback( const boost::function<void ( EmotivEvent event )> & callback );
@@ -281,9 +281,9 @@ private:
 	float					mTheta;
 
 	// Threading
-	boost::mutex			mMutex;
-	bool					mRunning;
-	boost::thread			mThread;
-	void					update();
+	boost::mutex					mMutex;
+	bool							mRunning;
+	std::shared_ptr<boost::thread>	mThread;
+	void							update();
 
 };

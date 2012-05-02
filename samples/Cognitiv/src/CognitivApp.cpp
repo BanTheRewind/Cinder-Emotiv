@@ -71,6 +71,7 @@ public:
 	void draw();
 	void prepareSettings( ci::app::AppBasic::Settings * settings );
 	void setup();
+	void shutdown();
 	void update();
 
 	// Emotiv callback
@@ -79,7 +80,7 @@ public:
 private:
 
 	// Emotiv
-	bool		loadProfile( const std::string & profileName );
+	bool		loadProfile( const std::string &profileName );
 	int32_t		mCallbackId;
 	EmotivRef	mEmotiv;
 	
@@ -87,7 +88,7 @@ private:
 	EmitterRef	mEmitter;
 
 	// Writes messages to debug console
-	void trace( const std::string & message );
+	void trace( const std::string &message );
 
 };
 
@@ -107,14 +108,14 @@ void CognitivApp::draw()
 }
 
 // Load a profile by name
-bool CognitivApp::loadProfile( const string & profileName )
+bool CognitivApp::loadProfile( const string &profileName )
 {
 
 	// Load profile from default location
 	try {
-		map<string, string> profiles = Emotiv::listProfiles( "c:\\ProgramData\\Emotiv" );
-		for ( map<string, string>::iterator profileIt = profiles.begin(); profileIt != profiles.end(); ++profileIt ) {
-			if ( boost::to_lower_copy( profileIt->first ) == boost::to_lower_copy( profileName ) && mEmotiv->loadProfile( profileIt->second ) ) {
+		map<fs::path, string> profiles = Emotiv::listProfiles( "c:\\ProgramData\\Emotiv" );
+		for ( map<fs::path, string>::iterator profileIt = profiles.begin(); profileIt != profiles.end(); ++profileIt ) {
+			if ( profileIt->first.generic_string() == profileName && mEmotiv->loadProfile( profileIt->second ) ) {
 				profiles.clear();
 				return true;
 			}
@@ -215,24 +216,29 @@ void CognitivApp::setup()
 	}
 
 	// Add Emotiv callback
-	mCallbackId = mEmotiv->addCallback<CognitivApp>( & CognitivApp::onData, this );
+	mCallbackId = mEmotiv->addCallback<CognitivApp>( &CognitivApp::onData, this );
 
 	// Create emitter
 	mEmitter = Emitter::create();
 
 }
 
-// Write to console and debug window
-void CognitivApp::trace( const string & message )
+// Called on exit
+void CognitivApp::shutdown()
 {
+	if ( mEmotiv->connected() ) {
+		mEmotiv->disconnect();
+	}
+}
 
-	// DO IT!
+// Write to console and debug window
+void CognitivApp::trace( const string &message )
+{
 #ifdef CINDER_MSW
 	OutputDebugStringA( ( message + "\n" ).c_str() );
 #else
 	console() << message << "\n";
 #endif
-
 }
 
 // Runs update logic

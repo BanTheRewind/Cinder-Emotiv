@@ -59,6 +59,7 @@ public:
 	void draw();
 	void prepareSettings( ci::app::AppBasic::Settings * settings );
 	void setup();
+	void shutdown();
 	void update();
 
 	// Emotiv callback
@@ -93,7 +94,7 @@ private:
 	float		mTrails;
 	
 	// Writes messages to debug console
-	void trace( const std::string & message );
+	void trace( const std::string &message );
 
 };
 
@@ -254,21 +255,26 @@ void BrainwaveApp::setup()
 	mColorTheta = ColorAf( 0.531f, 0.375f, 0.828f, 1.0f );
 
 	// Add Emotiv callback
-	mCallbackId = mEmotiv->addCallback<BrainwaveApp>( & BrainwaveApp::onData, this );
+	mCallbackId = mEmotiv->addCallback<BrainwaveApp>( &BrainwaveApp::onData, this );
 
 }
 
-// Write to console and debug window
-void BrainwaveApp::trace( const string & message )
+// Called on exit
+void BrainwaveApp::shutdown()
 {
+	if ( mEmotiv->connected() ) {
+		mEmotiv->disconnect();
+	}
+}
 
-	// DO IT!
+// Write to console and debug window
+void BrainwaveApp::trace( const string &message )
+{
 #ifdef CINDER_MSW
 	OutputDebugStringA( ( message + "\n" ).c_str() );
 #else
 	console() << message << "\n";
 #endif
-
 }
 
 // Runs update logic
